@@ -1,0 +1,9 @@
+{
+  "uuid": "zz-force-stop-driver@enisn",
+  "name": "Force Stop test driver",
+  "description": "Test-only JavaScript bridge for the private Cinnamon started by tests/nested_test.py.",
+  "version": "0.0.0",
+  "cinnamon-version": [
+    "6.6"
+  ]
+}
