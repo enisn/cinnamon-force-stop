@@ -25,7 +25,7 @@ Both use the xlet settings interface and take effect at once.
 
 - The right-click menu of the window list is a private class. The extension wraps `PopupMenuManager.addMenu` to reach each menu when it is created, and adds the item after the window list has filled its menu. Everything is restored in `disable()`. No file of Cinnamon is touched, and if a Cinnamon update changes the window list, only the item is missing until the extension is updated.
 - Child processes are read from `/proc/<pid>/task/*/children` before the application is stopped, because the kernel reparents them once it is gone. They are stopped with the application in one `kill` call that takes an argument array. GJS has no way to signal a process it did not start itself.
-- The one synchronous lookup is the owner of `/proc/<pid>` when the menu opens, which is needed to grey the item out. `/proc` answers from memory.
+- The item is greyed out for processes of another user. Their owner is looked up in `/proc` without blocking the main loop, and the item is updated as soon as the answer arrives.
 - User-visible strings are translatable. The template is in `po/`.
 
 ## Testing

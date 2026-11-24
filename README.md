@@ -63,7 +63,7 @@ A window titled "Force Stop test" appears for about three minutes. Leave it alon
 
 ## Translations
 
-User-visible strings are translatable. `force-stop@enisn/po/force-stop@enisn.pot` is the template.
+User-visible strings are translatable. `force-stop@enisn/po/force-stop@enisn.pot` is the template; regenerate it with `python3 tools/make_pot.py` after changing a string.
 
 ## License
 
