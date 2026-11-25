@@ -59,13 +59,23 @@ def main():
         step_flip()
 
     def step_flip():
-        # The switches come in the order in which the schema lists them.
+        # Widgets come in the order in which the schema lists them.
         with open(os.path.join(page.xlet_dir, 'settings-schema.json')) as handle:
-            keys = [key for key, setting in json.load(handle).items() if setting.get('type') == 'switch']
+            schema = json.load(handle)
+        switch_keys = [key for key, setting in schema.items() if setting.get('type') == 'switch']
+        combo_keys = [key for key, setting in schema.items() if setting.get('type') == 'combobox']
         switches = [widget for widget in widgets(page.window) if isinstance(widget, Gtk.Switch)]
+        combos = [widget for widget in widgets(page.window) if isinstance(widget, Gtk.ComboBox)]
         for change in changes:
-            key, value = change.split('=')
-            switches[keys.index(key)].set_active(value == 'on')
+            key, value = change.split('=', 1)
+            if key in switch_keys:
+                switches[switch_keys.index(key)].set_active(value == 'on')
+            elif key in combo_keys:
+                combo = combos[combo_keys.index(key)]
+                for row in combo.get_model():
+                    if row[0] == value:
+                        combo.set_active_iter(row.iter)
+                        break
         later(0.8, lambda: page.window.destroy())
 
     page = module.MainWindow(types.SimpleNamespace(type='extension', uuid=uuid, id=None, tab=None))

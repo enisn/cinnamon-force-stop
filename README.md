@@ -2,11 +2,11 @@
 
 Adds a **Force Stop** item to the right-click menu of the Grouped window list, for applications that no longer respond to Close.
 
-![Force Stop below Close in the window list menu](screenshots/menu.png)
+![Force Stop above Close in the window list menu](screenshots/menu.png)
 
 ## What it does
 
-- **Force Stop sits right below Close.** When an application has several windows, it sits below *Close all* instead.
+- **Force Stop sits right above Close by default.** When an application has several windows, it sits above *Close all* instead, so *Close* stays at the bottom of the menu. This can be switched to below *Close* in Settings.
 - **It asks first.** The confirmation names the application and the process that is about to be stopped. `Escape` cancels it.
 - **Optionally, it stops the processes the application started too.** This is off by default.
 - **It knows when it cannot help.** The item is greyed out for windows without a process ID, and for processes of another user such as an application running as root.
@@ -25,8 +25,9 @@ System Settings → Extensions → **Force Stop** → *Configure*.
 | --- | --- | --- |
 | Ask before stopping an application | On | Shows the confirmation dialog. Turn it off to stop an application the moment you click Force Stop. |
 | Also stop the processes it started | Off | Stops the helper processes of the application as well. This includes anything launched from its built-in terminal, such as a local web server or a database. |
+| Position in the menu | Above Close | Place Force Stop above Close so Close stays at the bottom, or below Close at the very bottom. |
 
-Changes take effect at once. *More options → Reset to defaults* restores both.
+Changes take effect at once. *More options → Reset to defaults* restores all settings.
 
 ## Requirements
 
@@ -57,7 +58,7 @@ The window list is changed in memory only. No file of Cinnamon is touched. The e
 python3 tests/nested_test.py
 ```
 
-This starts a private Cinnamon on Xephyr, with its own session bus, settings and extension directory, and drives it with real clicks. Its 31 checks cover the menu, the confirmation dialog, both settings, the process tree, and disabling and enabling. It needs `Xephyr`, `xdotool`, `zenity`, `xmessage` and ImageMagick.
+This starts a private Cinnamon on Xephyr, with its own session bus, settings and extension directory, and drives it with real clicks. Its 32 checks cover the menu, the confirmation dialog, all settings, the process tree, and disabling and enabling. It needs `Xephyr`, `xdotool`, `zenity`, `xmessage` and ImageMagick.
 
 A window titled "Force Stop test" appears for about three minutes. Leave it alone: Xephyr passes clicks on it into the nested desktop. Screenshots and logs of the last run end up in `tests/artifacts/`.
 

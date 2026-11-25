@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: force-stop@enisn 0.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/linuxmint/cinnamon-spices-extensions/issues\n"
-"POT-Creation-Date: 2026-11-24 11:48+0000\n"
+"POT-Creation-Date: 2026-11-25 12:53+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -21,25 +21,25 @@ msgid "Cancel"
 msgstr ""
 
 #. metadata.json->name
-#: extension.js:30 extension.js:204
+#: extension.js:30 extension.js:205
 msgid "Force Stop"
 msgstr ""
 
-#: extension.js:252
+#: extension.js:257
 #, javascript-format
 msgid ""
 "Process %d and the processes it started will be stopped immediately, "
 "together with all of its windows. Unsaved changes will be lost."
 msgstr ""
 
-#: extension.js:253
+#: extension.js:258
 #, javascript-format
 msgid ""
 "Process %d will be stopped immediately, together with all of its windows. "
 "Unsaved changes will be lost."
 msgstr ""
 
-#: extension.js:254
+#: extension.js:259
 #, javascript-format
 msgid "Force Stop \"%s\"?"
 msgstr ""
@@ -61,6 +61,22 @@ msgstr ""
 
 #. settings-schema.json->kill-children->tooltip
 msgid "Stop the helper processes of the application too, for example a server launched from its built-in terminal"
+msgstr ""
+
+#. settings-schema.json->menu-position->description
+msgid "Position in the menu"
+msgstr ""
+
+#. settings-schema.json->menu-position->tooltip
+msgid "Place Force Stop above Close so Close stays at the bottom, or below Close at the very bottom"
+msgstr ""
+
+#. settings-schema.json->menu-position->options
+msgid "Above Close"
+msgstr ""
+
+#. settings-schema.json->menu-position->options
+msgid "Below Close"
 msgstr ""
 
 #. metadata.json->description

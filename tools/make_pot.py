@@ -45,6 +45,10 @@ def main():
         for field in ('description', 'tooltip'):
             if field in setting:
                 body += entry('settings-schema.json->%s->%s' % (key, field), setting[field])
+        if 'options' in setting:
+            for label, value in setting['options'].items():
+                if value != 'custom':
+                    body += entry('settings-schema.json->%s->options' % key, label)
     metadata = json.loads((XLET / 'metadata.json').read_text())
     body += entry('metadata.json->description', metadata['description'])
 

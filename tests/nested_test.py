@@ -285,10 +285,11 @@ class Nested:
 
     def setting(self, key):
         return json.loads(self.ev(
-            'return JSON.stringify({confirm: extension().confirm, "kill-children": extension().killChildren});'))[key]
+            'return JSON.stringify({confirm: extension().confirm, "kill-children": extension().killChildren,'
+            ' "menu-position": extension().menuPosition});'))[key]
 
     def wait_setting(self, key, value):
-        wait_until(lambda: self.setting(key) is value, 'the %s setting to reach the extension' % key)
+        wait_until(lambda: self.setting(key) == value, 'the %s setting to reach the extension' % key)
 
     def read_settings(self):
         with open(self.settings_file) as handle:
@@ -382,9 +383,10 @@ def run_tests(n):
         'modal: Main.modalActorFocusStack.length});'))
     check(loaded == {'object': True, 'running': True, 'modal': 0},
           'the shell enabled the extension and holds no modal')
-    check(n.read_settings() == {'confirm': True, 'kill-children': False} and
-          n.setting('confirm') is True and n.setting('kill-children') is False,
-          'the settings are installed with their defaults: confirmation on, child processes off')
+    check(n.read_settings() == {'confirm': True, 'kill-children': False, 'menu-position': 'above-close'} and
+          n.setting('confirm') is True and n.setting('kill-children') is False and
+          n.setting('menu-position') == 'above-close',
+          'the settings are installed with their defaults: confirmation on, child processes off, above Close')
 
     # First right-click ever: the window list creates its menu lazily, so the hook must catch it.
     first = n.launch('One')
@@ -392,8 +394,8 @@ def run_tests(n):
     check(not n.state(first.pid)['menu'], 'the window list creates its right-click menu lazily')
     labels = n.open_menu(first.pid)
     check(labels is not None and 'Force Stop' in labels and
-          labels.index('Force Stop') == labels.index('Close') + 1,
-          'a freshly created right-click menu lists Force Stop right after Close')
+          labels.index('Force Stop') == labels.index('Close') - 1,
+          'a freshly created right-click menu lists Force Stop right above Close')
     n.shot('01-menu.png')
     check(n.item(first.pid)['sensitive'], 'Force Stop is clickable for a window of one of our own processes')
 
@@ -431,14 +433,14 @@ def run_tests(n):
     check(current['dialog'] is None and current['modal'] == 0,
           'the dialog is gone and no modal is left behind after the kill')
 
-    # Several windows of one application: the menu offers Close all, and Force Stop follows it.
+    # Several windows of one application: the menu offers Close all, and Force Stop sits above it.
     second, third = n.launch('Two'), n.launch('Three')
     wait_until(lambda: n.state(third.pid)['group'], 'the second window in the window list')
     time.sleep(1)
     labels = n.open_menu(third.pid)
     check(labels is not None and 'Close all' in labels and
-          labels.index('Force Stop') == labels.index('Close all') + 1,
-          'with several windows, Force Stop follows Close all: %s' % labels)
+          labels.index('Force Stop') == labels.index('Close all') - 1,
+          'with several windows, Force Stop sits right above Close all: %s' % labels)
     n.shot('04-menu-several-windows.png')
     target = n.state(third.pid)['targetPid']
     victim, survivor = (second, third) if target == second.pid else (third, second)
@@ -521,9 +523,22 @@ def run_tests(n):
             os.kill(pid, signal.SIGKILL)
     exit_status(tree)
 
-    n.open_settings('-', 'kill-children=off', 'confirm=on')
+    n.open_settings('-', 'menu-position=below-close')
+    n.wait_setting('menu-position', 'below-close')
+    below = n.launch('Below')
+    wait_until(lambda: n.state(below.pid)['group'], 'the window for below-close position check')
+    labels = n.open_menu(below.pid)
+    check(labels is not None and 'Force Stop' in labels and
+          labels.index('Force Stop') == labels.index('Close') + 1,
+          'with menu-position set to below-close, Force Stop sits right below Close')
+    n.close_menu(below.pid)
+    below.kill()
+    wait_until(lambda: not n.state(below.pid)['group'], 'the window list to drop the below-close window')
+
+    n.open_settings('-', 'kill-children=off', 'confirm=on', 'menu-position=above-close')
     n.wait_setting('kill-children', False)
-    check(n.read_settings() == {'confirm': True, 'kill-children': False},
+    n.wait_setting('menu-position', 'above-close')
+    check(n.read_settings() == {'confirm': True, 'kill-children': False, 'menu-position': 'above-close'},
           'the defaults can be restored from the settings page')
 
     # Disabling removes the item from menus that already exist and from menus created afterwards.

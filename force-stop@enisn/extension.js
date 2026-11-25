@@ -132,6 +132,7 @@ class ForceStop {
         // Kept for as long as the settings could not be read.
         this.confirm = true;
         this.killChildren = false;
+        this.menuPosition = 'above-close';
         this._closingMenu = null;
         this._dialog = null;
         this._menuPrototype = null;
@@ -207,8 +208,12 @@ class ForceStop {
 
         // The stock menu ends its window controls with a separator, so keep Force Stop in that block.
         const items = menu._getMenuItems();
-        const lastItem = items[items.length - 1];
-        menu.addMenuItem(item, lastItem instanceof PopupMenu.PopupSeparatorMenuItem ? items.length - 1 : undefined);
+        let insertAt = items.length;
+        if (insertAt > 0 && items[insertAt - 1] instanceof PopupMenu.PopupSeparatorMenuItem)
+            insertAt--;
+        if (this.menuPosition !== 'below-close' && insertAt > 0)
+            insertAt--;
+        menu.addMenuItem(item, insertAt);
     }
 
     // Signals only reach processes of our own user, so the item is greyed out for any other, such
@@ -290,6 +295,7 @@ function enable() {
     settings = new Settings.ExtensionSettings(forceStop, UUID);
     settings.bind('confirm', 'confirm');
     settings.bind('kill-children', 'killChildren');
+    settings.bind('menu-position', 'menuPosition');
     return forceStop;
 }
 

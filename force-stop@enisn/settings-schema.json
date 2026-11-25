@@ -14,5 +14,15 @@
         "default": false,
         "description": "Also stop the processes it started",
         "tooltip": "Stop the helper processes of the application too, for example a server launched from its built-in terminal"
+    },
+    "menu-position": {
+        "type": "combobox",
+        "default": "above-close",
+        "description": "Position in the menu",
+        "tooltip": "Place Force Stop above Close so Close stays at the bottom, or below Close at the very bottom",
+        "options": {
+            "Above Close": "above-close",
+            "Below Close": "below-close"
+        }
     }
 }
